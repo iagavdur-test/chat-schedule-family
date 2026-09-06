@@ -254,11 +254,12 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
     private void handleShowWeeklyPlans(long chatId) {
         LocalDate today = LocalDate.now();
         Iterable<EventEntity> allEvents = eventRepository.findAll();
-        StringBuilder messageBuilder = new StringBuilder("🗓️ *Ваши планы на ближайшую неделю:*\n\n");
         boolean hasAnyEvents = false;
+
         for (int i = 0; i < 7; i++) {
             LocalDate currentDay = today.plusDays(i);
             List<EventEntity> dayEvents = new ArrayList<>();
+
             for (EventEntity event : allEvents) {
                 boolean isMatch = switch (event.getRepeatType()) {
                     case ONCE -> event.getEventDate().isEqual(currentDay);
@@ -268,8 +269,13 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
                 };
                 if (isMatch) dayEvents.add(event);
             }
+
             if (!dayEvents.isEmpty()) {
-                hasAnyEvents = true;
+                if (!hasAnyEvents) {
+                    sendText(chatId, "🗓️ *Ваши планы на ближайшую неделю:*");
+                    hasAnyEvents = true;
+                }
+
                 String dayName = switch (currentDay.getDayOfWeek()) {
                     case MONDAY -> "Понедельник";
                     case TUESDAY -> "Вторник";
@@ -279,21 +285,45 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
                     case SATURDAY -> "Суббота";
                     case SUNDAY -> "Воскресенье";
                 };
-                messageBuilder.append(String.format("🔹 *%s (%02d.%02d):*\n",
+
+                sendText(chatId, String.format("🔹 *%s (%02d.%02d):*",
                         dayName, currentDay.getDayOfMonth(), currentDay.getMonthValue()));
+
                 for (EventEntity event : dayEvents) {
                     String timeText = event.getEventTime() != null ? " 🕒 " + event.getEventTime() : "";
-                    String prefix = event.getRepeatType() == RepeatType.YEARLY ? "🎂" : "▫️";
-                    messageBuilder.append(String.format("  %s %s%s — _%s_\n",
-                            prefix, event.getTitle(), timeText, event.getDescription()));
+                    String prefix = event.getRepeatType() == RepeatType.YEARLY ? "🎂" : "📌";
+
+                    String eventText = String.format("%s *%s*%s\n📝 %s",
+                            prefix, event.getTitle(), timeText, event.getDescription());
+
+                    InlineKeyboardButton deleteButton = InlineKeyboardButton.builder()
+                            .text("❌ Удалить это событие")
+                            .callbackData("delete_" + event.getId()) // Тот же префикс "delete_"
+                            .build();
+
+                    InlineKeyboardRow row = new InlineKeyboardRow(deleteButton);
+
+                    InlineKeyboardMarkup markup = InlineKeyboardMarkup.builder()
+                            .keyboard(Collections.singletonList(row))
+                            .build();
+
+                    SendMessage message = SendMessage.builder()
+                            .chatId(chatId)
+                            .text(eventText)
+                            .parseMode("Markdown")
+                            .replyMarkup(markup)
+                            .build();
+                    try {
+                        telegramClient.execute(message);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-                messageBuilder.append("\n");
             }
         }
+
         if (!hasAnyEvents) {
             sendText(chatId, "📅 *На ближайшую неделю планов нет!* Полная свобода. 😎");
-            return;
         }
-        sendText(chatId, messageBuilder.toString());
     }
 }

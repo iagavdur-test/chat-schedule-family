@@ -31,7 +31,7 @@ public class NotificationService {
         this.groupId = groupId;
     }
 
-    @Scheduled(cron = "0 0 10 * * *", zone = "Europe/Minsk")
+    @Scheduled(cron = "0 30 6 * * *", zone = "Europe/Minsk")
     public void sendDailyDigest() {
         LocalDate today = LocalDate.now();
         List<EventEntity> todayEvents = getEventsForDate(today);
@@ -68,8 +68,9 @@ public class NotificationService {
                 LocalTime eventTime = event.getEventTime().truncatedTo(ChronoUnit.MINUTES);
                 long minutesUntilEvent = ChronoUnit.MINUTES.between(now, eventTime);
 
-                if (minutesUntilEvent == 60 || minutesUntilEvent == 30 || minutesUntilEvent == 15) {
+                if (minutesUntilEvent == 120 || minutesUntilEvent == 60 || minutesUntilEvent == 30 || minutesUntilEvent == 15) {
                     String timePhrase = switch ((int) minutesUntilEvent) {
+                        case 120 -> "через 2 часа";
                         case 60 -> "через 1 час";
                         case 30 -> "через 30 минут";
                         case 15 -> "через 15 минут";
