@@ -62,7 +62,7 @@ public class NotificationService {
     public void checkTimelyNotifications() {
         LocalDate today = LocalDate.now(ZoneId.of("Europe/Minsk"));
         List<EventEntity> todayEvents = getEventsForDate(today);
-        LocalTime now = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+        LocalTime now = LocalTime.now(ZoneId.of("Europe/Minsk")).truncatedTo(ChronoUnit.MINUTES);
 
         for (EventEntity event : todayEvents) {
             if (event.getEventTime() != null) {
