@@ -19,6 +19,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -132,7 +133,7 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
     }
 
     private void handleShowTodayPlans(long chatId) {
-        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalDate today = java.time.LocalDate.now(ZoneId.of("Europe/Minsk"));
         Iterable<EventEntity> allEvents = eventRepository.findAll();
         boolean hasEvents = false;
 
@@ -252,7 +253,7 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
     }
 
     private void handleShowWeeklyPlans(long chatId) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Europe/Minsk"));
         Iterable<EventEntity> allEvents = eventRepository.findAll();
         boolean hasAnyEvents = false;
 

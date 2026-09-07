@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class NotificationService {
 
     @Scheduled(cron = "0 30 6 * * *", zone = "Europe/Minsk")
     public void sendDailyDigest() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Europe/Minsk"));
         List<EventEntity> todayEvents = getEventsForDate(today);
         if (todayEvents.isEmpty()) return;
 
@@ -44,7 +45,7 @@ public class NotificationService {
 
     @Scheduled(cron = "0 30 21 * * *", zone = "Europe/Minsk")
     public void sendTomorrowDigest() {
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        LocalDate tomorrow = LocalDate.now(ZoneId.of("Europe/Minsk")).plusDays(1);
         List<EventEntity> tomorrowEvents = getEventsForDate(tomorrow);
 
         if (tomorrowEvents.isEmpty()) {
@@ -59,7 +60,7 @@ public class NotificationService {
 
     @Scheduled(cron = "0 * * * * *", zone = "Europe/Minsk")
     public void checkTimelyNotifications() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Europe/Minsk"));
         List<EventEntity> todayEvents = getEventsForDate(today);
         LocalTime now = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
 
