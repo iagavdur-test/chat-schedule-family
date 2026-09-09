@@ -103,11 +103,11 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
                     sendText(chatId, helpText);
                     return;
                 }
-                case "📅 Мои планы на сегодня" -> {
+                case "📅 Наши планы на сегодня" -> {
                     handleShowTodayPlans(chatId);
                     return;
                 }
-                case "📅 Планы на неделю" -> {
+                case "📅 Наши планы на ближайшую неделю" -> {
                     handleShowWeeklyPlans(chatId);
                     return;
                 }
