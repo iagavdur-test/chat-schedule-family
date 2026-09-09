@@ -62,7 +62,7 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
                         e.printStackTrace();
                     }
 
-                    sendText(chatId, "🗑️ Событие успешно удалено из вашего календаря!");
+                    sendText(chatId, "🗑️ Событие успешно удалено из нашего календаря!");
                 } else {
                     sendText(chatId, "❌ Это событие уже было удалено ранее.");
                 }
@@ -90,13 +90,13 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
                     )));
 
             if (!user.isHasAccess()) {
-                sendText(chatId, "⛔ Доступ ограничен. Запрос отправлен администратору.");
+                sendText(chatId, "⛔⛔⛔ Доступ ограничен!!! Запрос отправлен администратору.");
                 return;
             }
 
             switch (messageText) {
                 case "/start", "ℹ️ Справка" -> {
-                    String helpText = "🤖 *Добро пожаловать в Календарь-Бот!*\n\n" +
+                    String helpText = "🤖 *Добро пожаловать в планировщик календаря!*\n\n" +
                             "Используйте кнопки меню для управления:\n" +
                             "• Нажмите *📅 Мои планы на сегодня*, чтобы увидеть список задач.\n" +
                             "• Нажмите *➕ Добавить событие*, чтобы получить шаблон для ввода.";
@@ -114,7 +114,7 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
                 case "➕ Добавить событие" -> {
                     String templateText = "📋 *Шаблон для добавления события:*\n\n" +
                             "Скопируйте текст ниже, замените данные на свои и отправьте боту:\n\n" +
-                            "`/add 06.09.2026 15:00 ONCE Важная встреча ; Обсудить разработку` \n\n" +
+                            "`/add 06.09.2026 15:00 ONCE Родительское собрание в школе ; Взять с собой блокнот и ручку` \n\n" +
                             "_Типы повторений: ONCE (один раз), WEEKLY (каждую неделю), YEARLY (каждый год). Если время не нужно, укажите вместо него дефис `-`._";
                     sendText(chatId, templateText);
                     return;
@@ -128,7 +128,7 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
 
             user.setMessageCount(user.getMessageCount() + 1);
             userRepository.save(user);
-            sendText(chatId, String.format("Привет, %s! Вы можете использовать нижнее меню для работы со своими задачами.", user.getFirstName()));
+            sendText(chatId, String.format("Привет, %s! Вы можете использовать нижнее меню для работы с событиями.", user.getFirstName()));
         }
     }
 
@@ -178,7 +178,7 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
             }
         }
         if (!hasEvents) {
-            sendText(chatId, "📅 *На сегодня планов нет!* Отличный повод отдохнуть. 😎");
+            sendText(chatId, "📅 *У нас на сегодня планов нет!* Отличный повод отдохнуть. 😎");
         }
     }
 
@@ -237,8 +237,8 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
     private ReplyKeyboardMarkup createMainKeyboard() {
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row1 = new KeyboardRow();
-        row1.add(new KeyboardButton("📅 Мои планы на сегодня"));
-        row1.add(new KeyboardButton("📅 Планы на неделю"));
+        row1.add(new KeyboardButton("📅 Наши планы на сегодня"));
+        row1.add(new KeyboardButton("📅 Наши планы на неделю"));
         KeyboardRow row2 = new KeyboardRow();
         row2.add(new KeyboardButton("➕ Добавить событие"));
         row2.add(new KeyboardButton("ℹ️ Справка"));
@@ -273,7 +273,7 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
 
             if (!dayEvents.isEmpty()) {
                 if (!hasAnyEvents) {
-                    sendText(chatId, "🗓️ *Ваши планы на ближайшую неделю:*");
+                    sendText(chatId, "🗓️ *Наши планы на ближайшую неделю:*");
                     hasAnyEvents = true;
                 }
 
@@ -324,7 +324,7 @@ public class MyEchoBot implements LongPollingSingleThreadUpdateConsumer {
         }
 
         if (!hasAnyEvents) {
-            sendText(chatId, "📅 *На ближайшую неделю планов нет!* Полная свобода. 😎");
+            sendText(chatId, "📅 *У нас на ближайшую неделю планов нет!* Полная свобода. 😎");
         }
     }
 }
